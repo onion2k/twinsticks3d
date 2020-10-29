@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+// import ReactDOM from 'react-dom'
+import React, { useRef, useState } from 'react'
+import { Canvas, useFrame } from 'react-three-fiber'
+import { OrbitControls } from '@react-three/drei/OrbitControls'
 
-function App() {
+import './App.css'
+
+const Box = (props) => {
+  // This reference will give us direct access to the mesh
+  const mesh = useRef()
+
+  // Set up state for the hovered and active state
+  const [hovered, setHover] = useState(false)
+  const [active, setActive] = useState(false)
+
+  // Rotate mesh every frame, this is outside of React without overhead
+  useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.01))
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <mesh
+      {...props}
+      ref={mesh}
+      scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
+      onClick={(e) => setActive(!active)}
+      onPointerOver={(e) => setHover(true)}
+      onPointerOut={(e) => setHover(false)}
+    >
+      <boxBufferGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+    </mesh>
+  )
 }
+
+const App = () => 
+  <Canvas>
+    <ambientLight />
+    <pointLight position={[10, 10, 10]} />
+    <Box position={[-1.2, 0, 0]} />
+    <Box position={[1.2, 0, 0]} />
+    <OrbitControls />
+  </Canvas>
 
 export default App;
