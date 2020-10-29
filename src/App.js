@@ -22,8 +22,8 @@ const Box = (props) => {
       ref={mesh}
       scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
       onClick={(e) => setActive(!active)}
-      onPointerOver={(e) => setHover(true)}
-      onPointerOut={(e) => setHover(false)}
+      onPointerOver={(e) => { e.stopPropagation(); setHover(true)}}
+      onPointerOut={(e) => { e.stopPropagation(); setHover(false)}}
     >
       <boxBufferGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
