@@ -14,7 +14,7 @@ const Box = (props) => {
   const [active, setActive] = useState(false)
 
   // Rotate mesh every frame, this is outside of React without overhead
-  useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.01))
+  // useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.01))
 
   return (
     <mesh
@@ -31,13 +31,28 @@ const Box = (props) => {
   )
 }
 
+const BoxArray = () => {
+
+  const bxs = []
+
+  for (let x = 0; x < 100; x++) {
+    bxs.push([
+      (Math.floor(x / 10) - 4.5) * 1.5,
+      ((x % 10) - 4.5) * 1.5,
+      0
+    ])
+  }
+
+  return bxs.map((box)=><Box position={box} />)
+
+}
+
 const App = () => 
-  <Canvas>
+  <Canvas camera={{ fov: 45, position: [0, 0, 20] }}>
     <ambientLight />
     <pointLight position={[10, 10, 10]} />
-    <Box position={[-1.2, 0, 0]} />
-    <Box position={[1.2, 0, 0]} />
-    <OrbitControls />
+    <BoxArray />
+    <OrbitControls enableZoom={false} />
   </Canvas>
 
 export default App;
