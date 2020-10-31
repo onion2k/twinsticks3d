@@ -21,9 +21,9 @@ const Box = (props) => {
       {...props}
       ref={mesh}
       scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-      onClick={(e) => setActive(!active)}
-      onPointerOver={(e) => { e.stopPropagation(); setHover(true)}}
-      onPointerOut={(e) => { e.stopPropagation(); setHover(false)}}
+      onClick={(e) => { e.stopPropagation(); setActive(!active) }}
+      onPointerOver={(e) => { e.stopPropagation(); setHover(true) }}
+      onPointerOut={(e) => { e.stopPropagation(); setHover(false) }}
     >
       <boxBufferGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
@@ -35,11 +35,11 @@ const BoxArray = () => {
 
   const bxs = []
 
-  for (let x = 0; x < 100; x++) {
+  for (let x = 0; x < 400; x++) {
     bxs.push([
-      (Math.floor(x / 10) - 4.5) * 1.5,
-      ((x % 10) - 4.5) * 1.5,
-      0
+      (Math.floor(x / 20) - 9.5) * 1.3,
+      0,
+      ((x % 20) - 9.5) * 1.3
     ])
   }
 
@@ -48,7 +48,7 @@ const BoxArray = () => {
 }
 
 const App = () => 
-  <Canvas camera={{ fov: 45, position: [0, 0, 20] }}>
+  <Canvas camera={{ fov: 45, position: [0, 20, -20] }}>
     <ambientLight />
     <pointLight position={[10, 10, 10]} />
     <BoxArray />
