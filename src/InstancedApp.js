@@ -1,15 +1,17 @@
 import * as THREE from 'three'
-import React, { useRef, useMemo, useState, useEffect } from 'react'
+import React, { Suspense, useRef, useMemo, useState, useEffect } from 'react'
 import { Canvas, useFrame } from 'react-three-fiber'
 import tumult from 'tumult'
 // import { EffectComposer, DepthOfField, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 
 import { OrbitControls } from '@react-three/drei/OrbitControls'
+import { useGLTF } from '@react-three/drei/useGLTF'
+import { Stats } from '@react-three/drei/Stats'
 
 import './App.css'
 
-const dimX = 200;
-const dimY = 200;
+const dimX = 150;
+const dimY = 150;
 const cubeCount = dimX * dimY;
 
 const tempObject = new THREE.Object3D()
@@ -21,6 +23,57 @@ const noise = new Array(cubeCount).fill().map((_, i) => (1 + noiseFunc.octavate(
 const colorPalette = ['#1111ff', '#1111ff', '#1111ff', '#1111ff', '#1111ff', '#fcd046', '#00aa00', '#007700', '#004400']
 const colors = new Array(cubeCount).fill().map((_, i) => colorPalette[Math.floor(noise[i] * 9)])
 const speeds = new Array(cubeCount).fill().map((_, i) => Math.floor(noise[i] * 9) < 5 ? 1 : 0)
+
+// function Tree() {
+//   const { nodes, materials } = useGLTF('/tree/tree01.gltf', true)
+//   return <mesh material={materials['Mat']} geometry={nodes['node-0'].geometry} scale={[0.005, 0.005, 0.005]} />
+// }
+
+// function UseGLTFTree() {
+//   return (
+//     <Suspense fallback={null}>
+//       <Tree />
+//     </Suspense>
+//   )
+// }
+
+const tempTrees = new THREE.Object3D()
+
+function Forest() {
+  // const colorArray = useMemo(() => Float32Array.from(new Array(cubeCount).fill().flatMap((_, i) => tempColor.set(colors[i]).toArray())), [])
+  // const noiseArray = useMemo(() => Float32Array.from(new Array(cubeCount).fill().flatMap((_, i) => tempColor.set(colors[i]).toArray())), [])
+
+  const { nodes, materials } = useGLTF('/tree/tree01.gltf', true)
+
+  const treeGeometry = nodes['node-0'].geometry;
+  const scaleFactor = 225;
+  const ref = useRef()
+  let treeCount = 0;
+
+  useEffect(() => {
+    let i = 0
+    for (let x = 0; x < dimX; x++) {
+      for (let z = 0; z < dimY; z++) {
+        if (Math.floor(noise[x * dimY + z] * 9) > 5) {
+          const id = i++
+          tempTrees.position.set((dimX/2 - x) * scaleFactor, Math.floor(noise[x * dimY + z] * 4.5) * scaleFactor, (dimY/2 - z) * scaleFactor)
+          tempTrees.rotation.y = Math.random() * (Math.PI * 2)
+          // tempTrees.rotation.z = tempTrees.rotation.y * 2
+          tempTrees.scale.set( 1, 1, 1 );
+          tempTrees.updateMatrix()
+          ref.current.setMatrixAt(id, tempTrees.matrix)
+          treeCount++;
+        }
+      }
+    }
+    console.log(treeCount)
+    ref.current.instanceMatrix.needsUpdate = true
+  }, [ref.current]);
+
+  return (
+    <instancedMesh ref={ref} args={[treeGeometry, materials['Mat'], 5000]} scale={[0.0045, 0.0045, 0.0045]} />
+  )
+}
 
 function Boxes() {
   const colorArray = useMemo(() => Float32Array.from(new Array(cubeCount).fill().flatMap((_, i) => tempColor.set(colors[i]).toArray())), [])
@@ -64,8 +117,12 @@ const InstancedApp = () => (
     onCreated={({ gl }) => gl.setClearColor('black')}>
     <ambientLight color={'#444444'} />
     <pointLight position={[50, 50, 50]} intensity={1.0} />
+    <Suspense fallback={null}>
+      <Forest />
+    </Suspense>
     <Boxes />
     <OrbitControls />
+    <Stats />
     {/* <EffectComposer> */}
       {/* <DepthOfField focusDistance={0} focalLength={0.5} bokehScale={3} height={120} /> */}
       {/* <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} /> */}
