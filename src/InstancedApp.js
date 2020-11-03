@@ -10,8 +10,8 @@ import { Stats } from '@react-three/drei/Stats'
 
 import './App.css'
 
-const dimX = 150;
-const dimY = 150;
+const dimX = 30;
+const dimY = 30;
 const cubeCount = dimX * dimY;
 
 const tempObject = new THREE.Object3D()
@@ -37,16 +37,42 @@ const speeds = new Array(cubeCount).fill().map((_, i) => Math.floor(noise[i] * 9
 //   )
 // }
 
+
+function Plane_Jet() {
+  const { nodes } = useGLTF('models/plane/1397 Jet.gltf', true)
+  return (
+    <primitive object={nodes['scene-0']} scale={[0.05,0.05,0.05]} position={[8,5,0]} />
+  )
+}
+
+function Plane_Cessna() {
+  const { nodes } = useGLTF('models/plane/small-airplane-v3.gltf', true)
+  return (
+    <primitive object={nodes['scene-0']} scale={[0.75,0.75,0.75]} position={[0,5,0]} />
+  )
+}
+
+
+
+function Boat() {
+  const { nodes } = useGLTF('models/boat/Rowboat_01.gltf', true)
+  return (
+    <primitive object={nodes['scene-0']} scale={[0.2,0.2,0.2]} position={[10,1.5,10]} />
+  )
+}
+
+
+
+
+
 const tempTrees = new THREE.Object3D()
 
 function Forest() {
-  // const colorArray = useMemo(() => Float32Array.from(new Array(cubeCount).fill().flatMap((_, i) => tempColor.set(colors[i]).toArray())), [])
-  // const noiseArray = useMemo(() => Float32Array.from(new Array(cubeCount).fill().flatMap((_, i) => tempColor.set(colors[i]).toArray())), [])
-
-  const { nodes, materials } = useGLTF('/tree/tree01.gltf', true)
+  const { nodes, materials } = useGLTF('models/tree/tree01.gltf', true)
 
   const treeGeometry = nodes['node-0'].geometry;
-  const scaleFactor = 225;
+  treeGeometry.scale(0.005,0.005,0.005 )
+
   const ref = useRef()
   let treeCount = 0;
 
@@ -54,24 +80,21 @@ function Forest() {
     let i = 0
     for (let x = 0; x < dimX; x++) {
       for (let z = 0; z < dimY; z++) {
-        if (Math.floor(noise[x * dimY + z] * 9) > 5) {
+        if (Math.floor(noise[x * dimY + z] * 9) > 5 && Math.random()>0.5) {
           const id = i++
-          tempTrees.position.set((dimX/2 - x) * scaleFactor, Math.floor(noise[x * dimY + z] * 4.5) * scaleFactor, (dimY/2 - z) * scaleFactor)
+          tempTrees.position.set((dimX/2 - x), Math.floor(noise[x * dimY + z] * 4.25), (dimY/2 - z))
           tempTrees.rotation.y = Math.random() * (Math.PI * 2)
-          // tempTrees.rotation.z = tempTrees.rotation.y * 2
-          tempTrees.scale.set( 1, 1, 1 );
           tempTrees.updateMatrix()
           ref.current.setMatrixAt(id, tempTrees.matrix)
           treeCount++;
         }
       }
     }
-    console.log(treeCount)
     ref.current.instanceMatrix.needsUpdate = true
   }, [ref.current]);
 
   return (
-    <instancedMesh ref={ref} args={[treeGeometry, materials['Mat'], 5000]} scale={[0.0045, 0.0045, 0.0045]} />
+    <instancedMesh ref={ref} args={[treeGeometry, materials['Mat'], 500]} />
   )
 }
 
@@ -90,7 +113,7 @@ function Boxes() {
       for (let z = 0; z < dimY; z++) {
         const id = i++
         tempObject.position.set(dimX/2 - x, (-3 + (7 * noise[x * dimY + z])) * (1 - speeds[x * dimY + z]), dimY/2 - z)
-        tempObject.position.y += ((Math.sin(x / 4 + time) + Math.sin(0 / 4 + time) + Math.sin(z / 4 + time)) * 0.5 + (noise[x + z * dimY])) * speeds[x * dimY + z]
+        tempObject.position.y += ((Math.sin(x / 4 + time) + Math.sin(0 / 4 + time) + Math.sin(z / 4 + time)) * 0.25) * speeds[x * dimY + z]
         // tempObject.rotation.y = Math.sin(x / 4 + time) + Math.sin(0 / 4 + time) + Math.sin(z / 4 + time)
         // tempObject.rotation.z = tempObject.rotation.y * 2
         tempObject.updateMatrix()
@@ -120,8 +143,14 @@ const InstancedApp = () => (
     <Suspense fallback={null}>
       <Forest />
     </Suspense>
+    <Suspense fallback={null}>
+      <Plane_Cessna />
+    </Suspense>
+    <Suspense fallback={null}>
+      <Plane_Jet />
+    </Suspense>
     <Boxes />
-    <OrbitControls />
+    <OrbitControls enableZoom={false} minPolarAngle={0.5} maxPolarAngle={1.2} />
     <Stats />
     {/* <EffectComposer> */}
       {/* <DepthOfField focusDistance={0} focalLength={0.5} bokehScale={3} height={120} /> */}
