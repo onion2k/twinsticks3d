@@ -8,10 +8,12 @@ import { OrbitControls } from '@react-three/drei/OrbitControls'
 import { useGLTF } from '@react-three/drei/useGLTF'
 import { Stats } from '@react-three/drei/Stats'
 
+import Model from './Jet'
+
 import './App.css'
 
-const dimX = 30;
-const dimY = 30;
+const dimX = 100;
+const dimY = 100;
 const cubeCount = dimX * dimY;
 
 const tempObject = new THREE.Object3D()
@@ -38,19 +40,20 @@ const speeds = new Array(cubeCount).fill().map((_, i) => Math.floor(noise[i] * 9
 // }
 
 
-function Plane_Jet() {
-  const { nodes } = useGLTF('models/plane/1397 Jet.gltf', true)
-  return (
-    <primitive object={nodes['scene-0']} scale={[0.05,0.05,0.05]} position={[8,5,0]} />
-  )
-}
+// function Plane_Jet() {
+//   const { nodes } = useGLTF('models/plane/1397 Jet.gltf', true)
+//   console.log(nodes)
+//   return (
+//     <primitive object={nodes['scene-0']} scale={[0.05,0.05,0.05]} position={[8,9,0]} />
+//   )
+// }
 
-function Plane_Cessna() {
-  const { nodes } = useGLTF('models/plane/small-airplane-v3.gltf', true)
-  return (
-    <primitive object={nodes['scene-0']} scale={[0.75,0.75,0.75]} position={[0,5,0]} />
-  )
-}
+// function Plane_Cessna() {
+//   const { nodes } = useGLTF('models/plane/small-airplane-v3.gltf', true)
+//   return (
+//     <primitive object={nodes['scene-0']} scale={[0.75,0.75,0.75]} position={[0,9,0]} />
+//   )
+// }
 
 
 
@@ -143,11 +146,11 @@ const InstancedApp = () => (
     <Suspense fallback={null}>
       <Forest />
     </Suspense>
-    <Suspense fallback={null}>
+    {/* <Suspense fallback={null}>
       <Plane_Cessna />
-    </Suspense>
+    </Suspense> */}
     <Suspense fallback={null}>
-      <Plane_Jet />
+      <Model />
     </Suspense>
     <Boxes />
     <OrbitControls enableZoom={false} minPolarAngle={0.5} maxPolarAngle={1.2} />
