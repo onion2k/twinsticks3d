@@ -12,8 +12,8 @@ import Model from './Jet'
 
 import './App.css'
 
-const dimX = 100;
-const dimY = 100;
+const dimX = 50;
+const dimY = 50;
 const cubeCount = dimX * dimY;
 
 const tempObject = new THREE.Object3D()
@@ -139,7 +139,7 @@ function Boxes() {
 const InstancedApp = () => (
   <Canvas
     gl={{ antialias: false, alpha: false }}
-    camera={{ position: [0, 15, 30], near: 1, far: 500 }}
+    camera={{ position: [0, 45, 45], near: 1, far: 500 }}
     onCreated={({ gl }) => gl.setClearColor('black')}>
     <ambientLight color={'#444444'} />
     <pointLight position={[50, 50, 50]} intensity={1.0} />
