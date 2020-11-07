@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import React, { Suspense, useRef, useMemo, useState, useEffect } from 'react'
+import React, { Suspense, useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from 'react-three-fiber'
 import tumult from 'tumult'
 // import { EffectComposer, DepthOfField, Bloom, Noise, Vignette } from '@react-three/postprocessing'
@@ -8,45 +8,25 @@ import { OrbitControls } from '@react-three/drei/OrbitControls'
 import { useGLTF } from '@react-three/drei/useGLTF'
 import { Stats } from '@react-three/drei/Stats'
 
-import Model from './Jet'
+import { GamepadProvider } from './Gamepad'
+import Player from './Player'
 
 import './App.css'
 
 const dimX = 50;
-const dimY = 50;
+const dimY = 500;
 const cubeCount = dimX * dimY;
 
 const tempObject = new THREE.Object3D()
 const tempColor = new THREE.Color()
 
 const noiseFunc = new tumult.Perlin2()
-const noise = new Array(cubeCount).fill().map((_, i) => (1 + noiseFunc.octavate(1.25, Math.floor(i / dimX) / 20, Math.floor(i % dimY) / 20)) * 0.5)
+const noise = new Array(cubeCount).fill().map((_, i) => (1 + noiseFunc.octavate(1.25, Math.floor(i / dimX) / 200, Math.floor(i % dimY) / 20)) * 0.5)
 
 const colorPalette = ['#1111ff', '#1111ff', '#1111ff', '#1111ff', '#1111ff', '#fcd046', '#00aa00', '#007700', '#004400']
 const colors = new Array(cubeCount).fill().map((_, i) => colorPalette[Math.floor(noise[i] * 9)])
 const speeds = new Array(cubeCount).fill().map((_, i) => Math.floor(noise[i] * 9) < 5 ? 1 : 0)
 
-// function Tree() {
-//   const { nodes, materials } = useGLTF('/tree/tree01.gltf', true)
-//   return <mesh material={materials['Mat']} geometry={nodes['node-0'].geometry} scale={[0.005, 0.005, 0.005]} />
-// }
-
-// function UseGLTFTree() {
-//   return (
-//     <Suspense fallback={null}>
-//       <Tree />
-//     </Suspense>
-//   )
-// }
-
-
-// function Plane_Jet() {
-//   const { nodes } = useGLTF('models/plane/1397 Jet.gltf', true)
-//   console.log(nodes)
-//   return (
-//     <primitive object={nodes['scene-0']} scale={[0.05,0.05,0.05]} position={[8,9,0]} />
-//   )
-// }
 
 // function Plane_Cessna() {
 //   const { nodes } = useGLTF('models/plane/small-airplane-v3.gltf', true)
@@ -57,12 +37,12 @@ const speeds = new Array(cubeCount).fill().map((_, i) => Math.floor(noise[i] * 9
 
 
 
-function Boat() {
-  const { nodes } = useGLTF('models/boat/Rowboat_01.gltf', true)
-  return (
-    <primitive object={nodes['scene-0']} scale={[0.2,0.2,0.2]} position={[10,1.5,10]} />
-  )
-}
+// function Boat() {
+//   const { nodes } = useGLTF('models/boat/Rowboat_01.gltf', true)
+//   return (
+//     <primitive object={nodes['scene-0']} scale={[0.2,0.2,0.2]} position={[10,1.5,10]} />
+//   )
+// }
 
 
 
@@ -77,7 +57,6 @@ function Forest() {
   treeGeometry.scale(0.005,0.005,0.005 )
 
   const ref = useRef()
-  let treeCount = 0;
 
   useEffect(() => {
     let i = 0
@@ -89,12 +68,12 @@ function Forest() {
           tempTrees.rotation.y = Math.random() * (Math.PI * 2)
           tempTrees.updateMatrix()
           ref.current.setMatrixAt(id, tempTrees.matrix)
-          treeCount++;
+
         }
       }
     }
     ref.current.instanceMatrix.needsUpdate = true
-  }, [ref.current]);
+  }, []);
 
   return (
     <instancedMesh ref={ref} args={[treeGeometry, materials['Mat'], 500]} />
@@ -136,6 +115,7 @@ function Boxes() {
   )
 }
 
+
 const InstancedApp = () => (
   <Canvas
     gl={{ antialias: false, alpha: false }}
@@ -146,14 +126,13 @@ const InstancedApp = () => (
     <Suspense fallback={null}>
       <Forest />
     </Suspense>
-    {/* <Suspense fallback={null}>
-      <Plane_Cessna />
-    </Suspense> */}
-    <Suspense fallback={null}>
-      <Model />
-    </Suspense>
+    <GamepadProvider>
+      <Suspense fallback={null}>
+        <Player />
+      </Suspense>
+    </GamepadProvider>
     <Boxes />
-    <OrbitControls enableZoom={false} minPolarAngle={0.5} maxPolarAngle={1.2} />
+    {/* <OrbitControls enableZoom={false} minPolarAngle={0.5} maxPolarAngle={1.2} /> */}
     <Stats />
     {/* <EffectComposer> */}
       {/* <DepthOfField focusDistance={0} focalLength={0.5} bokehScale={3} height={120} /> */}
