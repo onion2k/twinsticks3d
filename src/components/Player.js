@@ -1,8 +1,9 @@
-import React, { useRef, useContext, useEffect } from 'react'
+import React, { useRef, useContext } from 'react'
 import { useFrame } from 'react-three-fiber'
 import { GamepadContext } from './Gamepad.js';
 import { Camera } from './Camera.js'
 import Jet from './Jet.js'
+// import LightAircraft from './LightAircraft.js'
 
 export default function Model(props) {
   const ref = useRef()
@@ -32,7 +33,7 @@ export default function Model(props) {
 
   return (
     <group ref={ref} {...props}>
-      <group ref={camref} position={[0, 0, 0]}>m''k='
+      <group ref={camref} position={[0, 0, 0]}>
         <Camera position={[0, 45, -45]} near={1} far={500} />
       </group>
       <group ref={planeref} position={[0, 9.0, 0]}>
