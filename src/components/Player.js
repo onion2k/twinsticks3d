@@ -36,7 +36,7 @@ export default function Model(props) {
   return (
     <group ref={ref} {...props}>
       <group ref={camref} position={[0, 0, 0]}>
-        <Camera position={[0, 45, -45]} near={1} far={500} />
+        <Camera position={[0, 20, -45]} near={1} far={400} />
       </group>
       <group ref={planeref} position={[0, 9.0, 0]}>
         <Jet />

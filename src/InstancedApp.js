@@ -15,10 +15,10 @@ import './App.css'
 const InstancedApp = () => (
   <Canvas
     gl={{ antialias: false, alpha: false }}
-    camera={{ position: [0, 45, 45], near: 1, far: 500 }}
-    onCreated={({ gl }) => gl.setClearColor('black')}>
+    onCreated={({ gl }) => gl.setClearColor('white')}>
     <ambientLight color={'#444444'} />
     <pointLight position={[50, 50, 50]} intensity={1.0} />
+    {/* <fogExp2 attach="fog" args={['white', 0.004]} /> */}
     <GamepadProvider>
       <Suspense fallback={null}>
         <Player />

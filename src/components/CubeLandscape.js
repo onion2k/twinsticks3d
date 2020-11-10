@@ -21,7 +21,7 @@ const speeds = new Array(cubeCount).fill().map((_, i) => Math.floor(noise[i] * 9
 const tempTrees = new THREE.Object3D()
 
 function Forest() {
-  const { nodes, materials } = useGLTF('models/tree/tree01.gltf', true)
+  const { nodes, materials } = useGLTF('models/tree/lowpoly/tree01.gltf', true)
 
   const treeGeometry = nodes['node-0'].geometry;
   treeGeometry.scale(0.005,0.005,0.005 )
