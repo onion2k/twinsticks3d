@@ -27,7 +27,7 @@ const InstancedApp = () => (
     <Suspense fallback={null}>
       <VectorLandscape />
     </Suspense>
-    <OrbitControls enableZoom={false} minPolarAngle={0.5} maxPolarAngle={1.2} />
+    {/* <OrbitControls enableZoom={false} minPolarAngle={0.5} maxPolarAngle={1.2} /> */}
     <Stats />
     {/* <EffectComposer> */}
       {/* <DepthOfField focusDistance={0} focalLength={0.5} bokehScale={3} height={120} /> */}

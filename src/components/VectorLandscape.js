@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import React, { useRef, useMemo, useEffect } from 'react'
-import { useFrame } from 'react-three-fiber'
+import { useFrame, LineSegments } from 'react-three-fiber'
 import { useGLTF } from '@react-three/drei/useGLTF'
 import tumult from 'tumult'
+import "./SeaMaterial"
 
 const dimX = 100;
 const dimY = 100;
@@ -51,6 +52,21 @@ function Forest() {
   )
 }
 
+
+function Sea() {
+  const ref = useRef()
+  useFrame(({ camera, clock}) => {
+    ref.current.material.time = clock.getElapsedTime()
+  })
+
+  return (
+    <mesh ref={ref} rotation={[Math.PI * -0.5, 0, Math.PI ]}>
+      <planeBufferGeometry attach="geometry" args={[dimX,dimY, 1, 1]} />
+      <seaMaterial attach="material" color="blue" />
+    </mesh>
+  )
+}
+
 function VectorLandscape() {
 
   const geo = new THREE.PlaneGeometry(dimX,dimY, dimX,dimY+1)
@@ -64,8 +80,8 @@ function VectorLandscape() {
       const v1 = geo.vertices[nn]
       v1.z = map(col,0,255,-10,10) //map from 0:255 to -10:10
       // if(v1.z > 2.5) v1.z *= 1.3 //exaggerate the peaks
-      v1.x += map(Math.random(),0,1,-0.25,0.25) //jitter x
-      v1.y += map(Math.random(),0,1,-0.25,0.25) //jitter y
+      v1.x += map(Math.random(),0,1,-0.3,0.3) //jitter x
+      v1.y += map(Math.random(),0,1,-0.3,0.3) //jitter y
     }
   }
 
@@ -79,9 +95,9 @@ function VectorLandscape() {
     //alt: color transparent to show the underwater landscape
     const avgz = (a.z+b.z+c.z)/3
     if(avgz < 0) {
-        a.z = 0
-        b.z = 0
-        c.z = 0
+        a.z = -0.1
+        b.z = -0.1
+        c.z = -0.1
     }
 
     //assign colors based on the highest point of the face
@@ -100,14 +116,32 @@ function VectorLandscape() {
   //required for flat shading
   geo.computeFlatVertexNormals()
 
-  const mat = new THREE.MeshLambertMaterial({
-    // wireframe:true,
+  var material = new THREE.MeshLambertMaterial( {
     vertexColors: THREE.VertexColors,
-    //required for flat shading
-    flatShading:true,
-})
+    flatShading: true,
+  } );
 
-  return <mesh material={mat} geometry={geo} rotation={[Math.PI * -0.5, 0, Math.PI ]} />
+  return (
+    <mesh material={material} geometry={geo} rotation={[Math.PI * -0.5, 0, Math.PI ]} />
+  )
+
+  // var material = new THREE.MeshPhongMaterial( {
+  //   vertexColors: THREE.VertexColors,
+  //   flatShading: true,
+  //   polygonOffset: true,
+  //   polygonOffsetFactor: 1,
+  //   polygonOffsetUnits: 1
+  // } );
+
+  // return (
+  //   <>
+  //     <mesh material={material} geometry={geo} rotation={[Math.PI * -0.5, 0, Math.PI ]} />
+  //     <lineSegments rotation={[Math.PI * -0.5, 0, Math.PI ]}>
+  //       <edgesGeometry attach="geometry" args={geo} />
+  //       <lineBasicMaterial color="green" attach="material" />
+  //     </lineSegments>
+  //   </>
+  // )
 
 }
 
@@ -115,6 +149,7 @@ const CubeLandscape = () => {
   return (
     <group>
       <Forest />
+      <Sea />
       <VectorLandscape />
     </group>
   )

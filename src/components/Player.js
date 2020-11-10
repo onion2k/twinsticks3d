@@ -12,7 +12,8 @@ export default function Model(props) {
   const [ gamepad, ] = useContext(GamepadContext)
 
   useFrame(({ clock, camera }) => {
-    if (gamepad) {      
+    if (gamepad) {
+
       if (gamepad.axes[0]) {
         planeref.current.rotation.z = gamepad.axes[0] * 0.5 // roll
         ref.current.rotation.y += gamepad.axes[0] * -0.02
@@ -29,6 +30,7 @@ export default function Model(props) {
     }
 
     camera.lookAt(ref.current.position)
+
   })
 
   return (

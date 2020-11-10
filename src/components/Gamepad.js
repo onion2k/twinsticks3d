@@ -18,12 +18,33 @@ const GamepadProvider = (props) => {
       console.log("A gamepad disconnected");
       setPollGamepads(false);
     });
+
+    window.addEventListener("keydown", (event) => {
+      setPollGamepads(true);
+    });
+
+    window.addEventListener("keyup", (event) => {
+      setPollGamepads(false);
+    });
   }, [])
 
   useFrame(({ clock, camera }) => {
     if (pollGamepads) {
       const gp = navigator.getGamepads();
-      setGamepadState(gp[0]);
+      if (gp[0]) {
+        setGamepadState(gp[0]);
+      } else {
+        setGamepadState({
+          axes: [0.9,0,0,0],
+          buttons: [
+            0,0,0,0,0,0,0,
+            { value: 0.2 }
+            ,0,0,0,0,0
+          ]
+        });
+      }
+    } else {
+      setGamepadState(null);
     }
   })
 
