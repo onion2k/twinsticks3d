@@ -16,8 +16,9 @@ const InstancedApp = () => (
   <Canvas
     gl={{ antialias: false, alpha: false }}
     onCreated={({ gl }) => gl.setClearColor('white')}>
-    <ambientLight color={'#444444'} />
-    <pointLight position={[50, 50, 50]} intensity={1.0} />
+    {/* <ambientLight color={'#111111'} /> */}
+    <pointLight position={[50, 50, 50]} intensity={0.25} />
+    <directionalLight color={'#ffffff'} intensity={0.05} position={[0, 1, 0]} />
     {/* <fogExp2 attach="fog" args={['white', 0.004]} /> */}
     <GamepadProvider>
       <Suspense fallback={null}>
@@ -27,7 +28,7 @@ const InstancedApp = () => (
     <Suspense fallback={null}>
       <VectorLandscape />
     </Suspense>
-    {/* <OrbitControls enableZoom={false} minPolarAngle={0.5} maxPolarAngle={1.2} /> */}
+    <OrbitControls enableZoom={false} minPolarAngle={0.5} maxPolarAngle={1.2} />
     <Stats />
     {/* <EffectComposer> */}
       {/* <DepthOfField focusDistance={0} focalLength={0.5} bokehScale={3} height={120} /> */}

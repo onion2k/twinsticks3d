@@ -3,7 +3,7 @@ import React, { useRef, useMemo, useEffect } from 'react'
 import { useFrame, LineSegments } from 'react-three-fiber'
 import { useGLTF } from '@react-three/drei/useGLTF'
 import tumult from 'tumult'
-import "./SeaMaterial"
+// import "./SeaMaterial"
 
 const dimX = 150;
 const dimY = 150;
@@ -74,14 +74,16 @@ function Forest() {
 
 function Sea() {
   const ref = useRef()
-  useFrame(({ camera, clock}) => {
-    ref.current.material.time = clock.getElapsedTime()
-  })
+
+  // useFrame(({ camera, clock}) => {
+  //   ref.current.material.time = clock.getElapsedTime()
+  // })
 
   return (
     <mesh ref={ref} rotation={[Math.PI * -0.5, 0, Math.PI ]}>
       <planeBufferGeometry attach="geometry" args={[dimX,dimY, 1, 1]} />
-      <seaMaterial attach="material" color="blue" />
+      {/* <seaMaterial attach="material" color="blue" /> */}
+      <meshLambertMaterial attach="material" color="#8888ff" />
     </mesh>
   )
 }
