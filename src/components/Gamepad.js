@@ -8,6 +8,12 @@ const GamepadProvider = (props) => {
   const [pollGamepads, setPollGamepads] = useState(false);
   const [gamepadState, setGamepadState] = useState(null);
 
+  const [yawInputState, setYawInputState] = useState(0);
+  const [thrustInputState, setThrustInputState] = useState(0);
+
+  const [yawState, setYawState] = useState(0);
+  const [thrustState, setThrustState] = useState(0);
+
   useEffect(()=>{
     window.addEventListener("gamepadconnected", (event) => {
       console.log("A gamepad connected");
@@ -20,32 +26,78 @@ const GamepadProvider = (props) => {
     });
 
     window.addEventListener("keydown", (event) => {
-      setPollGamepads(true);
+
+      switch (event.key) {
+        case 'ArrowLeft':
+          setYawInputState(-1);
+          break;
+        case 'ArrowRight':
+          setYawInputState(1);
+          break;
+        case 'ArrowUp':
+          setThrustInputState(1);
+          break;
+        case 'ArrowDown':
+          setThrustInputState(-1);
+          break;
+        default:
+          break;
+      }
+
     });
 
     window.addEventListener("keyup", (event) => {
-      setPollGamepads(false);
+
+      switch (event.key) {
+        case 'ArrowLeft':
+          setYawInputState(0);
+          break;
+        case 'ArrowRight':
+          setYawInputState(0);
+          break;
+        case 'ArrowUp':
+          setThrustInputState(0);
+          break;
+        case 'ArrowDown':
+          setThrustInputState(0);
+          break;
+        default:
+          break;
+      }
+
     });
+
+
   }, [])
 
   useFrame(({ clock, camera }) => {
-    if (pollGamepads) {
+
       const gp = navigator.getGamepads();
       if (gp[0]) {
         setGamepadState(gp[0]);
       } else {
+
+        if (yawInputState) {
+          setYawState(yaw=>yaw += 0.1 * yawInputState)
+        } else {
+          //die back
+        }
+
+        if (thrustInputState) {
+          setThrustState(thrust=>thrust += 0.1 * thrustInputState)
+        } else {
+          //die back
+        }
+
         setGamepadState({
-          axes: [0.9,0,0,0],
+          axes: [yawState,0,0,0],
           buttons: [
             0,0,0,0,0,0,0,
-            { value: 0.2 }
+            { value: thrustState }
             ,0,0,0,0,0
           ]
         });
       }
-    } else {
-      setGamepadState(null);
-    }
   })
 
   return (

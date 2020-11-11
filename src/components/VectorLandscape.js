@@ -1,9 +1,8 @@
 import * as THREE from 'three'
-import React, { useRef, useMemo, useEffect } from 'react'
-import { useFrame, LineSegments } from 'react-three-fiber'
+import React, { useRef, useEffect } from 'react'
 import { useGLTF } from '@react-three/drei/useGLTF'
 import tumult from 'tumult'
-import Road from './Road'
+import FlightPath from './Path'
 // import "./SeaMaterial"
 
 const dimX = 150;
@@ -28,12 +27,13 @@ const trees = [
   ["palm/FishtailPalmTree.gltf", "FishtailPalmTree_mat", 0.5],
   ["poplar/PoplarTree.gltf", "PoplarTree_Mat", 0.5],
   ["spruce/SpruceTree.gltf", "SpruceTree_mat", 0.4],
-  ["willow/PollardWillowTree.gltf", "PollardWillowTree_mat", 0.4]
+  ["willow/PollardWillowTree.gltf", "PollardWillowTree_mat", 0.4],
+  ["pine/PUSHILIN_pine_tree.gltf", "None", 1.5]
 ]
 
 function Forest() {
 
-  const tree = 0
+  const tree = 2
   const basePath = 'models/tree/'
   const modelPath = trees[tree][0]
   const materialName = trees[tree][1]
@@ -50,9 +50,9 @@ function Forest() {
     let i = 0
     for (let x = 0; x < dimX; x++) {
       for (let z = 0; z < dimY; z++) {
-        if (Math.floor(noise[x * dimY + z] * 9) > 5 && Math.floor(noise[x * dimY + z] * 9) < 7 && Math.random()>0.9) {
+        const col = noise[x * dimY + z] * 255
+        if (col > 170 && col < 200 && Math.random()>0.7) {
           const id = i++
-          const col = noise[x * dimY + z] * 255
           tempTrees.position.set(
             (dimX/2 - x),
             map(col,0,255,-10,10),
@@ -98,12 +98,11 @@ function VectorLandscape() {
     for (let i = 0; i < dimX; i++) {
       const n =  (j*(dimY)  +i)
       const nn = (j*(dimY+1)+i)
-      const col = noise[i * dimY + j] * 255
       const v1 = geo.vertices[nn]
-      v1.z = map(col,0,255,-10,10) //map from 0:255 to -10:10
-      // if(v1.z > 2.5) v1.z *= 1.3 //exaggerate the peaks
+      const col = noise[i * dimY + j] * 255
       v1.x += map(Math.random(),0,1,-0.3,0.3) //jitter x
       v1.y += map(Math.random(),0,1,-0.3,0.3) //jitter y
+      v1.z = map(col,0,255,-10,10) //map from 0:255 to -10:10
     }
   }
 
@@ -135,7 +134,6 @@ function VectorLandscape() {
 
   geo.colorsNeedUpdate = true
   geo.verticesNeedUpdate = true
-  //required for flat shading
   geo.computeFlatVertexNormals()
 
   var material = new THREE.MeshLambertMaterial( {
@@ -171,9 +169,9 @@ function VectorLandscape() {
 const CubeLandscape = () => {
   return (
     <group>
-      {/* <Forest /> */}
-      <Road />
-      {/* <Sea /> */}
+      <Forest />
+      <FlightPath />
+      <Sea />
       <VectorLandscape />
     </group>
   )
