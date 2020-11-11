@@ -3,6 +3,7 @@ import React, { useRef, useMemo, useEffect } from 'react'
 import { useFrame, LineSegments } from 'react-three-fiber'
 import { useGLTF } from '@react-three/drei/useGLTF'
 import tumult from 'tumult'
+import Road from './Road'
 // import "./SeaMaterial"
 
 const dimX = 150;
@@ -170,8 +171,9 @@ function VectorLandscape() {
 const CubeLandscape = () => {
   return (
     <group>
-      <Forest />
-      <Sea />
+      {/* <Forest /> */}
+      <Road />
+      {/* <Sea /> */}
       <VectorLandscape />
     </group>
   )
