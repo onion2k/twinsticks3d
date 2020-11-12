@@ -5,7 +5,14 @@ const GamepadContext = React.createContext({});
 
 const GamepadProvider = (props) => {
   // const ref = useRef()
-  const [pollGamepads, setPollGamepads] = useState(false);
+
+  const yawMin = -1.6;
+  const yawMax = 1.6;
+  const yawSensitivity = 0.12;
+  const thrustMax = 1;
+  const thrustMin = 0;
+  const thrustDeadMax = 0.1;
+
   const [gamepadState, setGamepadState] = useState(null);
 
   const [yawInputState, setYawInputState] = useState(0);
@@ -17,12 +24,10 @@ const GamepadProvider = (props) => {
   useEffect(()=>{
     window.addEventListener("gamepadconnected", (event) => {
       console.log("A gamepad connected");
-      setPollGamepads(true);
     });
     
     window.addEventListener("gamepaddisconnected", (event) => {
       console.log("A gamepad disconnected");
-      setPollGamepads(false);
     });
 
     window.addEventListener("keydown", (event) => {
@@ -70,23 +75,43 @@ const GamepadProvider = (props) => {
 
   }, [])
 
-  useFrame(({ clock, camera }) => {
+  useFrame(() => {
 
       const gp = navigator.getGamepads();
       if (gp[0]) {
+
+        // TODO - make this update the state rather than just use the values
+
         setGamepadState(gp[0]);
       } else {
-
         if (yawInputState) {
-          setYawState(yaw=>yaw += 0.1 * yawInputState)
+          if (yawState < yawMax && yawState > yawMin) {
+            setYawState(yaw=>yaw += yawSensitivity * yawInputState)
+          } else {
+            if (yawState > yawMax) {
+              setYawState(yawMax)
+            } else if (yawState < yawMin) {
+              setYawState(yawMin)
+            }
+          }
         } else {
-          //die back
+          if (yawState < yawSensitivity && yawState > -yawSensitivity) {
+            setYawState(0);
+          } else {
+            setYawState(yaw=>yaw += yawSensitivity * -2.0 * Math.sign(yaw))
+          }
         }
 
         if (thrustInputState) {
-          setThrustState(thrust=>thrust += 0.1 * thrustInputState)
+          if (thrustState < thrustMax && thrustState >= thrustMin) {
+            setThrustState(thrust=>thrust += 0.1 * thrustInputState)
+          }
         } else {
-          //die back
+          if (thrustState < thrustDeadMax) {
+            setThrustState(0)
+          } else {
+            setThrustState(thrust=>thrust -= 0.01)
+          }
         }
 
         setGamepadState({

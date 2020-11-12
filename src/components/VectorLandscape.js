@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import React, { useRef, useEffect } from 'react'
 import { useGLTF } from '@react-three/drei/useGLTF'
 import tumult from 'tumult'
-import FlightPath from './Path'
+import FlightPath from './FlightPath'
 // import "./SeaMaterial"
 
 const dimX = 150;
@@ -10,6 +10,8 @@ const dimY = 150;
 
 const noiseFunc = new tumult.Perlin2()
 const noise = new Array(dimX * dimY).fill().map((_, i) => (1 + noiseFunc.octavate(1.25, Math.floor(i / dimX) / 20, Math.floor(i % dimY) / 20)) * 0.5)
+
+console.log(noise[100])
 
 function map(val, smin, smax, emin, emax) {
   const t =  (val-smin)/(smax-smin)
@@ -170,7 +172,7 @@ const CubeLandscape = () => {
   return (
     <group>
       <Forest />
-      <FlightPath />
+      <FlightPath noise={noise} dimX={dimX} dimY={dimY} />
       <Sea />
       <VectorLandscape />
     </group>

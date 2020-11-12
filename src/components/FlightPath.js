@@ -1,0 +1,65 @@
+import React from 'react'
+import * as THREE from 'three'
+
+function map(val, smin, smax, emin, emax) {
+  const t =  (val-smin)/(smax-smin)
+  return (emax-emin)*t + emin
+}
+
+export default function Road(props) {
+
+  const { noise, dimX, dimY } = props
+
+  const boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+  const boxGeometry2 = new THREE.BoxGeometry( 0.5, 10, 0.5 );
+  const material = new THREE.MeshLambertMaterial( { color: 0x00ff00, flatShading: true } );
+  const material2 = new THREE.MeshLambertMaterial( { color: 0xff0000, flatShading: true } );
+
+  const curvePoints = [
+    { x: 30, z: -30 },
+    { x: 30, z: 0 },
+    { x: 30, z: 30 },
+    { x: 0, z: 30 },
+    { x: -30, z: 30 },
+    { x: -30, z: 0 },
+    { x: -30, z: -30 },
+    { x: 0, z: -30 },
+  ]
+
+  const curvePosts = []
+
+  const curveVertices = curvePoints.map( function ( handlePos ) {
+
+    const a = noise[(dimX * 0.5 - handlePos.x) * (dimY * 0.5 + handlePos.z)] * 255;
+
+    const col = 8 + (map(a,0,255,-10,10) * 2)
+    
+    const point = new THREE.Vector3(handlePos.x, col, handlePos.z);
+    const point2 = new THREE.Vector3(handlePos.x, 5, handlePos.z);
+    curvePosts.push(<mesh geometry={boxGeometry} material={material} position={point} />)
+    curvePosts.push(<mesh geometry={boxGeometry2} material={material2} position={point2} />)
+
+    return point
+
+  } );
+
+  console.log(curveVertices)
+
+  const curve = new THREE.CatmullRomCurve3( curveVertices );
+  curve.curveType = "catmullrom";
+  curve.tension = 0.3;
+  curve.closed = true;
+
+  const extruded = new THREE.TubeGeometry( curve, 200, 0.4, 5, true );
+  extruded.computeFlatVertexNormals()
+
+  return (
+    <>
+      {curvePosts.map(post=>post)}
+      <mesh geometry={extruded} material={material} />
+    </>
+  )
+
+  // return <lineLoop geometry={new THREE.BufferGeometry().setFromPoints( points )} material={new THREE.LineBasicMaterial( { color: 0xff0000 } )} scale={[20,5,20]} />;
+
+}

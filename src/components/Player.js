@@ -26,7 +26,7 @@ export default function Model(props) {
         camref.current.rotation.z += gamepad.axes[3] * 0.1
       }
 
-      ref.current.translateZ( 0.2 + (gamepad.buttons[7].value * 0.5) ) // thrust
+      ref.current.translateZ( (gamepad.buttons[7].value * 0.5) ) // thrust
     }
 
     camera.lookAt(ref.current.position)
