@@ -38,9 +38,6 @@ const Forest = ({ noise, dimX, dimY }) => {
     const treeGeometry = nodes['node-0'].geometry;
     treeGeometry.scale(scale,scale,scale)
 
-    // const treeGeometry = new THREE.ConeGeometry(1, 2, 4)
-    // const material = new THREE.MeshLambertMaterial({ color: 0x88ff88, flatShading: true })
-
     const ref = useRef()
 
     useEffect(() => {
