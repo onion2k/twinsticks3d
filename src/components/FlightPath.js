@@ -43,8 +43,6 @@ export default function Road(props) {
 
   } );
 
-  console.log(curveVertices)
-
   const curve = new THREE.CatmullRomCurve3( curveVertices );
   curve.curveType = "catmullrom";
   curve.tension = 0.3;

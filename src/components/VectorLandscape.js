@@ -9,9 +9,18 @@ const dimX = 150;
 const dimY = 150;
 
 const noiseFunc = new tumult.Perlin2()
-const noise = new Array(dimX * dimY).fill().map((_, i) => (1 + noiseFunc.octavate(1.25, Math.floor(i / dimX) / 20, Math.floor(i % dimY) / 20)) * 0.5)
-
-console.log(noise[100])
+const noise = new Array(dimX * dimY).fill().map(
+  (_, i) => 
+  // {
+  //   if (Math.floor(i / 150) > 70 && Math.floor(i / 150) < 80 && i % 150 > 20 && i % 150 < 30) {
+  //     return 1
+  //   } else if (Math.floor(i / 150) > 20 && Math.floor(i / 150) < 30 && i % 150 > 40 && i % 150 < 50) {
+  //     return 1
+  //   }
+  //   return 0
+  // }
+  0.5 + noiseFunc.octavate(1.25, Math.floor(i / dimX) / 20, Math.floor(i % dimY) / 20)
+)
 
 function map(val, smin, smax, emin, emax) {
   const t =  (val-smin)/(smax-smin)
@@ -91,7 +100,7 @@ function Sea() {
   )
 }
 
-function VectorLandscape() {
+function Landscape() {
 
   const geo = new THREE.PlaneGeometry(dimX,dimY, dimX,dimY+1)
 
@@ -102,8 +111,8 @@ function VectorLandscape() {
       const nn = (j*(dimY+1)+i)
       const v1 = geo.vertices[nn]
       const col = noise[i * dimY + j] * 255
-      v1.x += map(Math.random(),0,1,-0.3,0.3) //jitter x
-      v1.y += map(Math.random(),0,1,-0.3,0.3) //jitter y
+      // v1.x += map(Math.random(),0,1,-0.3,0.3) //jitter x
+      // v1.y += map(Math.random(),0,1,-0.3,0.3) //jitter y
       v1.z = map(col,0,255,-10,10) //map from 0:255 to -10:10
     }
   }
@@ -145,7 +154,7 @@ function VectorLandscape() {
   } );
 
   return (
-    <mesh material={material} geometry={geo} rotation={[Math.PI * -0.5, 0, Math.PI ]} />
+    <mesh material={material} geometry={geo} rotation={[Math.PI * 0.5, Math.PI, 0 ]} />
   )
 
   // var material = new THREE.MeshPhongMaterial( {
@@ -168,15 +177,29 @@ function VectorLandscape() {
 
 }
 
-const CubeLandscape = () => {
+// const helperGeometry = new THREE.SphereGeometry( 0.2, 16, 16 );
+// const helperMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, flatShading: true } );
+// const Helper = new Array()
+// const div = 5
+// for(let j=0; j< Math.floor(dimY/div); j++) {
+//   for (let i = 0; i < Math.floor(dimX/div); i++) {
+//     const n =  ((i * div) * dimY + (j * div))
+//     const col = noise[n] * 255
+//     const point = new THREE.Vector3(dimX * 0.5 - i * div, 0.2 + map(col,0,255,-10,10), dimY * 0.5 - j * div);
+//     Helper[n] = (<mesh geometry={helperGeometry} material={helperMaterial} position={point} />)
+//   }
+// }
+
+const VectorLandscape = () => {
   return (
     <group>
-      <Forest />
+      {/* <Forest /> */}
       <FlightPath noise={noise} dimX={dimX} dimY={dimY} />
-      <Sea />
-      <VectorLandscape />
+      {/* <Sea /> */}
+      {/* {Helper.map(post=>post)} */}
+      <Landscape />
     </group>
   )
 }
 
-export default CubeLandscape
+export default VectorLandscape
