@@ -48,7 +48,7 @@ const Forest = ({ noise, dimX, dimY }) => {
       for (let x = 0; x < dimX; x++) {
         for (let z = 0; z < dimY; z++) {
           const col = noise[x * dimY + z] * 255
-          if (col > 170 && col < 200 && Math.random()>0.9) {
+          if (col > 170 && col < 200 && Math.random()>0.8) {
             const id = i++
             tempTrees.position.set(
               (dimX/2 - x),
@@ -65,7 +65,7 @@ const Forest = ({ noise, dimX, dimY }) => {
     }, [dimX, dimY, noise]);
 
     return (
-      <instancedMesh ref={ref} args={[treeGeometry, materials[materialName], 1500]} />
+      <instancedMesh ref={ref} args={[treeGeometry, materials[materialName], 2500]} />
     )
 }
 
