@@ -1,86 +1,26 @@
 import * as THREE from 'three'
 import React, { useRef, useEffect } from 'react'
-import { useGLTF } from '@react-three/drei/useGLTF'
+import { useFrame } from 'react-three-fiber'
 import tumult from 'tumult'
 import FlightPath from './FlightPath'
+import Forest from './Forest'
+import VectorLandscapeHelper from './VectorLandscapeHelper'
 // import "./SeaMaterial"
 
-const dimX = 150;
-const dimY = 150;
+const dimX = 350;
+const dimY = 350;
+
+const octave = 1.1;
+const scale = 50;
 
 const noiseFunc = new tumult.Perlin2()
 const noise = new Array(dimX * dimY).fill().map(
-  (_, i) => 
-  // {
-  //   if (Math.floor(i / 150) > 70 && Math.floor(i / 150) < 80 && i % 150 > 20 && i % 150 < 30) {
-  //     return 1
-  //   } else if (Math.floor(i / 150) > 20 && Math.floor(i / 150) < 30 && i % 150 > 40 && i % 150 < 50) {
-  //     return 1
-  //   }
-  //   return 0
-  // }
-  0.5 + noiseFunc.octavate(1.25, Math.floor(i / dimX) / 20, Math.floor(i % dimY) / 20)
+  (_, i) => 0.5 + noiseFunc.octavate(octave, Math.floor(i / dimX) / scale, Math.floor(i % dimY) / scale)
 )
 
 function map(val, smin, smax, emin, emax) {
   const t =  (val-smin)/(smax-smin)
   return (emax-emin)*t + emin
-}
-
-const tempTrees = new THREE.Object3D()
-
-const trees = [
-  ["sequoia/SequoiaTree.gltf", "SequoiaTree_Mat", 0.1],
-  ["beech/BeechTree.gltf", "BeechTree_mat", 0.3],
-  ["brazilnut/BrazilNutTree.gltf", "BrazilNutTree_mat", 0.3],
-  ["larch/LarchTree.gltf", "LarchTree_mat", 0.3],
-  ["maple/MapleTree.gltf", "MapleTree_mat", 0.3],
-  ["palm/FishtailPalmTree.gltf", "FishtailPalmTree_mat", 0.5],
-  ["poplar/PoplarTree.gltf", "PoplarTree_Mat", 0.5],
-  ["spruce/SpruceTree.gltf", "SpruceTree_mat", 0.4],
-  ["willow/PollardWillowTree.gltf", "PollardWillowTree_mat", 0.4],
-  ["pine/PUSHILIN_pine_tree.gltf", "None", 1.5]
-]
-
-function Forest() {
-
-  const tree = 2
-  const basePath = 'models/tree/'
-  const modelPath = trees[tree][0]
-  const materialName = trees[tree][1]
-  const scale = trees[tree][2]
-
-  const { nodes, materials } = useGLTF(`${basePath}${modelPath}`, true)
-
-  const treeGeometry = nodes['node-0'].geometry;
-  treeGeometry.scale(scale,scale,scale)
-
-  const ref = useRef()
-
-  useEffect(() => {
-    let i = 0
-    for (let x = 0; x < dimX; x++) {
-      for (let z = 0; z < dimY; z++) {
-        const col = noise[x * dimY + z] * 255
-        if (col > 170 && col < 200 && Math.random()>0.7) {
-          const id = i++
-          tempTrees.position.set(
-            (dimX/2 - x),
-            map(col,0,255,-10,10),
-            (dimY/2 - z)
-          )
-          tempTrees.rotation.y = Math.random() * (Math.PI * 2)
-          tempTrees.updateMatrix()
-          ref.current.setMatrixAt(id, tempTrees.matrix)
-        }
-      }
-    }
-    ref.current.instanceMatrix.needsUpdate = true
-  }, []);
-
-  return (
-    <instancedMesh ref={ref} args={[treeGeometry, materials[materialName], 500]} />
-  )
 }
 
 
@@ -95,7 +35,7 @@ function Sea() {
     <mesh ref={ref} rotation={[Math.PI * -0.5, 0, Math.PI ]}>
       <planeBufferGeometry attach="geometry" args={[dimX,dimY, 1, 1]} />
       {/* <seaMaterial attach="material" color="blue" /> */}
-      <meshLambertMaterial attach="material" color="#8888ff" />
+      <meshPhongMaterial attach="material" color="#8888ff" />
     </mesh>
   )
 }
@@ -111,8 +51,8 @@ function Landscape() {
       const nn = (j*(dimY+1)+i)
       const v1 = geo.vertices[nn]
       const col = noise[i * dimY + j] * 255
-      // v1.x += map(Math.random(),0,1,-0.3,0.3) //jitter x
-      // v1.y += map(Math.random(),0,1,-0.3,0.3) //jitter y
+      v1.x += map(Math.random(),0,1,-0.1,0.1) //jitter x
+      v1.y += map(Math.random(),0,1,-0.1,0.1) //jitter y
       v1.z = map(col,0,255,-10,10) //map from 0:255 to -10:10
     }
   }
@@ -177,26 +117,13 @@ function Landscape() {
 
 }
 
-// const helperGeometry = new THREE.SphereGeometry( 0.2, 16, 16 );
-// const helperMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, flatShading: true } );
-// const Helper = new Array()
-// const div = 5
-// for(let j=0; j< Math.floor(dimY/div); j++) {
-//   for (let i = 0; i < Math.floor(dimX/div); i++) {
-//     const n =  ((i * div) * dimY + (j * div))
-//     const col = noise[n] * 255
-//     const point = new THREE.Vector3(dimX * 0.5 - i * div, 0.2 + map(col,0,255,-10,10), dimY * 0.5 - j * div);
-//     Helper[n] = (<mesh geometry={helperGeometry} material={helperMaterial} position={point} />)
-//   }
-// }
-
 const VectorLandscape = () => {
   return (
     <group>
-      {/* <Forest /> */}
+      <Forest noise={noise} dimX={dimX} dimY={dimY} />
       <FlightPath noise={noise} dimX={dimX} dimY={dimY} />
-      {/* <Sea /> */}
-      {/* {Helper.map(post=>post)} */}
+      <Sea />
+      {/* <VectorLandscapeHelper noise={noise} dimX={dimX} dimY={dimY} /> */}
       <Landscape />
     </group>
   )
