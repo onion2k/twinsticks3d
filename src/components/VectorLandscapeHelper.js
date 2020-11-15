@@ -9,7 +9,7 @@ function map(val, smin, smax, emin, emax) {
 const VectorLandscapeHelper = ({ noise, dimX, dimY }) => {
   const helperGeometry = new THREE.SphereGeometry( 0.2, 16, 16 );
   const helperMaterial = new THREE.MeshLambertMaterial( { color: 0xffff00 } );
-  const helpers = new Array()
+  const helpers = []
   const div = 5
   for(let j=0; j< Math.floor(dimY/div); j++) {
     for (let i = 0; i < Math.floor(dimX/div); i++) {
