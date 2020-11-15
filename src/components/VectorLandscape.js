@@ -42,7 +42,7 @@ function Sea() {
 
 function Landscape() {
 
-  const geo = new THREE.PlaneGeometry(dimX,dimY, dimX,dimY+1)
+  const geo = new THREE.PlaneGeometry(dimX, dimY, dimX, dimY+1)
 
   //assign vert data from the canvas
   for(let j=0; j<dimY; j++) {
