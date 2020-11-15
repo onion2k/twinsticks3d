@@ -18,12 +18,12 @@ const SkyBox = () => {
   const loader = new CubeTextureLoader();
 
   const texture = loader.load([
-    "/sky/yellowcloud_lf.jpg",
-    "/sky/yellowcloud_rt.jpg",
-    "/sky/yellowcloud_up.jpg",
-    "/sky/yellowcloud_dn.jpg",
-    "/sky/yellowcloud_ft.jpg",
-    "/sky/yellowcloud_bk.jpg",
+    "/sky/bluecloud_lf.jpg",
+    "/sky/bluecloud_rt.jpg",
+    "/sky/bluecloud_up.jpg",
+    "/sky/bluecloud_dn.jpg",
+    "/sky/bluecloud_ft.jpg",
+    "/sky/bluecloud_bk.jpg",
   ]);
 
   // Set the scene background property to the resulting texture.
