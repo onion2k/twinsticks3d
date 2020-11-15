@@ -33,8 +33,6 @@ const Forest = ({ noise, dimX, dimY }) => {
 
     const { nodes, materials } = useGLTF(`${basePath}${modelPath}`, true)
 
-    console.log(materials)
-
     const treeGeometry = nodes['node-0'].geometry;
     treeGeometry.scale(scale,scale,scale)
 

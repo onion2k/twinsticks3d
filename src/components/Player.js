@@ -1,4 +1,5 @@
-import React, { useRef, useContext } from 'react'
+import React, { useRef, useContext, useState } from 'react'
+import * as THREE from 'three'
 import { useFrame } from 'react-three-fiber'
 import { GamepadContext } from './Gamepad.js';
 import { Camera } from './Camera.js'
@@ -9,6 +10,9 @@ export default function Model(props) {
   const ref = useRef()
   const planeref = useRef()
   const camref = useRef()
+  const upAxis = new THREE.Vector3(0,1,0)
+  const wingAxis = new THREE.Vector3(1,0,0)
+
   const [ gamepad, ] = useContext(GamepadContext)
 
   useFrame(({ clock, camera }) => {
@@ -16,7 +20,11 @@ export default function Model(props) {
 
       if (gamepad.axes[0]) {
         planeref.current.rotation.z = gamepad.axes[0] * 0.5 // roll
-        ref.current.rotation.y += gamepad.axes[0] * -0.02
+        ref.current.rotateOnWorldAxis(upAxis, THREE.MathUtils.degToRad((gamepad.axes[0] * -1)))
+      }
+
+      if (gamepad.axes[1]) {
+        ref.current.rotateOnAxis(wingAxis, THREE.MathUtils.degToRad((gamepad.axes[1] * 1)))
       }
 
       if (gamepad.axes[2]) {
@@ -34,11 +42,11 @@ export default function Model(props) {
   })
 
   return (
-    <group ref={ref} {...props}>
+    <group ref={ref} position={[0, 11, 0]}>
       <group ref={camref} position={[0, 0, 0]}>
         <Camera position={[0, 20, -45]} near={1} far={400} />
       </group>
-      <group ref={planeref} position={[0, 9.0, 0]}>
+      <group ref={planeref} position={[0, 0, 0]}>
         <Jet />
       </group>
     </group>

@@ -9,6 +9,11 @@ const GamepadProvider = (props) => {
   const yawMin = -1.6;
   const yawMax = 1.6;
   const yawSensitivity = 0.12;
+
+  const pitchMin = -1.6;
+  const pitchMax = 1.6;
+  const pitchSensitivity = 0.12;
+
   const thrustMax = 1;
   const thrustMin = 0;
   const thrustDeadMax = 0.1;
@@ -16,9 +21,11 @@ const GamepadProvider = (props) => {
   const [gamepadState, setGamepadState] = useState(null);
 
   const [yawInputState, setYawInputState] = useState(0);
+  const [pitchInputState, setPitchInputState] = useState(0);
   const [thrustInputState, setThrustInputState] = useState(0);
 
   const [yawState, setYawState] = useState(0);
+  const [pitchState, setPitchState] = useState(0);
   const [thrustState, setThrustState] = useState(0);
 
   useEffect(()=>{
@@ -40,9 +47,15 @@ const GamepadProvider = (props) => {
           setYawInputState(1);
           break;
         case 'ArrowUp':
-          setThrustInputState(1);
+          setPitchInputState(1);
           break;
         case 'ArrowDown':
+          setPitchInputState(-1);
+          break;  
+        case 'a':
+          setThrustInputState(1);
+          break;
+        case 'z':
           setThrustInputState(-1);
           break;
         default:
@@ -61,9 +74,13 @@ const GamepadProvider = (props) => {
           setYawInputState(0);
           break;
         case 'ArrowUp':
-          setThrustInputState(0);
+          setPitchInputState(0);
           break;
         case 'ArrowDown':
+          setPitchInputState(0);
+          break;
+        case 'a':
+        case 'z':
           setThrustInputState(0);
           break;
         default:
@@ -79,9 +96,6 @@ const GamepadProvider = (props) => {
 
       const gp = navigator.getGamepads();
       if (gp[0]) {
-
-        // TODO - make this update the state rather than just use the values
-
         setGamepadState(gp[0]);
       } else {
         if (yawInputState) {
@@ -102,6 +116,24 @@ const GamepadProvider = (props) => {
           }
         }
 
+        if (pitchInputState) {
+          if (pitchState < pitchMax && pitchState > pitchMin) {
+            setPitchState(yaw=>yaw += yawSensitivity * pitchInputState)
+          } else {
+            if (pitchState > pitchMax) {
+              setPitchState(pitchMax)
+            } else if (pitchState < pitchMin) {
+              setPitchState(pitchMin)
+            }
+          }
+        } else {
+          if (pitchState < pitchSensitivity && pitchState > -pitchSensitivity) {
+            setPitchState(0);
+          } else {
+            setPitchState(pitch=>pitch += pitchSensitivity * -2.0 * Math.sign(pitch))
+          }
+        }
+
         if (thrustInputState) {
           if (thrustState < thrustMax && thrustState >= thrustMin) {
             setThrustState(thrust=>thrust += 0.1 * thrustInputState)
@@ -115,7 +147,7 @@ const GamepadProvider = (props) => {
         }
 
         setGamepadState({
-          axes: [yawState,0,0,0],
+          axes: [yawState,pitchState,0,0],
           buttons: [
             0,0,0,0,0,0,0,
             { value: thrustState }

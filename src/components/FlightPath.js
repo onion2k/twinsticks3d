@@ -6,7 +6,7 @@ function map(val, smin, smax, emin, emax) {
   return (emax-emin)*t + emin
 }
 
-export default function Road(props) {
+export default function FlightPath(props) {
 
   const { noise, dimX, dimY } = props
 
@@ -16,19 +16,19 @@ export default function Road(props) {
   const material2 = new THREE.MeshLambertMaterial( { color: 0xff0000, flatShading: true } );
 
   const curvePoints = [
-    { x: 30, z: -30 },
-    { x: 30, z: 0 },
-    { x: 30, z: 30 },
-    { x: 0, z: 30 },
-    { x: -30, z: 30 },
-    { x: -30, z: 0 },
-    { x: -30, z: -30 },
-    { x: 0, z: -30 },
+    { x: 50, z: -50 },
+    { x: 50, z: 0 },
+    { x: 50, z: 50 },
+    { x: 0, z: 50 },
+    { x: -50, z: 50 },
+    { x: -50, z: 0 },
+    { x: -50, z: -50 },
+    { x: 0, z: -50 },
   ]
 
   const curvePosts = []
 
-  const curveVertices = curvePoints.map( function ( handlePos ) {
+  const curveVertices = curvePoints.map( function ( handlePos, i ) {
 
     const a = noise[(dimX * 0.5 - handlePos.x) * dimY + (dimY * 0.5 - handlePos.z)] * 255;
 
@@ -36,8 +36,8 @@ export default function Road(props) {
 
     const point = new THREE.Vector3(handlePos.x, col, handlePos.z);
     const point2 = new THREE.Vector3(handlePos.x, 0 - (10 - col), handlePos.z);
-    curvePosts.push(<mesh geometry={boxGeometry} material={material} position={point} />)
-    curvePosts.push(<mesh geometry={boxGeometry2} material={material2} position={point2} />)
+    curvePosts.push(<mesh key={`node_${i}`} geometry={boxGeometry} material={material} position={point} />)
+    curvePosts.push(<mesh key={`post_${i}`} geometry={boxGeometry2} material={material2} position={point2} />)
 
     return point
 
