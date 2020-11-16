@@ -13,6 +13,10 @@ export default function Model(props) {
   const upAxis = new THREE.Vector3(0,1,0)
   const wingAxis = new THREE.Vector3(1,0,0)
 
+  const [pitch, setPitch] = useState(0)
+  // const [yaw, setYaw] = useState(0)
+  // const [thrust, setThrust] = useState(0)
+
   const [ gamepad, ] = useContext(GamepadContext)
 
   useFrame(({ clock, camera }) => {
@@ -24,8 +28,17 @@ export default function Model(props) {
       }
 
       if (gamepad.axes[1]) {
-        ref.current.rotateOnAxis(wingAxis, THREE.MathUtils.degToRad((gamepad.axes[1] * 1)))
-      }
+        setPitch(THREE.MathUtils.degToRad(gamepad.axes[1]))
+        ref.current.rotateOnAxis(wingAxis, pitch)
+      } 
+      // else {
+      //   if (ref.current.rotation.x < -0.05 || ref.current.rotation.x > 0.05) {
+      //     console.log(ref.current.rotation.x)
+      //     ref.current.rotateOnAxis(wingAxis, -0.01 * Math.sign(ref.current.rotation.x))
+      //   } else {
+      //     ref.current.rotation.x = 0
+      //   }
+      // }
 
       if (gamepad.axes[2]) {
         camref.current.rotation.y += gamepad.axes[2] * 0.1
