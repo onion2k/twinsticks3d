@@ -4,9 +4,15 @@ import { useFrame } from 'react-three-fiber'
 import { GamepadContext } from './Gamepad.js';
 import { Camera } from './Camera.js'
 import Jet from './Jet.js'
+
+import useStore from '../gameState'
+
 // import LightAircraft from './LightAircraft.js'
 
 export default function Model(props) {
+
+  const updateAltitude = useStore(state => state.updateAltitude)
+
   const ref = useRef()
   const planeref = useRef()
   const camref = useRef()
@@ -15,12 +21,15 @@ export default function Model(props) {
 
   const [pitch, setPitch] = useState(0)
   // const [yaw, setYaw] = useState(0)
-  // const [thrust, setThrust] = useState(0)
-
+  const [thrust, setThrust] = useState(0)
+  
   const [ gamepad, ] = useContext(GamepadContext)
 
   useFrame(({ clock, camera }) => {
+
     if (gamepad) {
+
+      setThrust( gamepad.buttons[7].value * 0.5 )
 
       if (gamepad.axes[0]) {
         planeref.current.rotation.z = gamepad.axes[0] * 0.5 // roll
@@ -47,7 +56,15 @@ export default function Model(props) {
         camref.current.rotation.z += gamepad.axes[3] * 0.1
       }
 
-      ref.current.translateZ( (gamepad.buttons[7].value * 0.5) ) // thrust
+      ref.current.translateZ( thrust ) // thrust
+
+      // Update world data
+      const planePos = new THREE.Vector3()
+      planeref.current.getWorldPosition(planePos);
+      updateAltitude(planePos.y)
+
+      // console.log(pitch, thrust, height)
+
     }
 
     camera.lookAt(ref.current.position)

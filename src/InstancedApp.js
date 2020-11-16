@@ -2,6 +2,7 @@ import React, { Suspense } from 'react'
 import { Canvas, useThree } from 'react-three-fiber'
 import { CubeTextureLoader } from "three";
 // import { EffectComposer, DepthOfField, Bloom, Noise, Vignette } from '@react-three/postprocessing'
+import useStore from './gameState'
 
 import { OrbitControls } from '@react-three/drei/OrbitControls'
 import { Stats } from '@react-three/drei/Stats'
@@ -31,7 +32,16 @@ const SkyBox = () => {
   return null;
 };
 
+const Alt = () => {
+
+  const altitude = useStore(state => state.altitude)
+
+  return <div>{Math.floor(altitude)}</div>
+
+}
+
 const InstancedApp = () => (
+  <>
   <Canvas
     style={{height:600,width:800}}
     gl={{ antialias: false, alpha: false }}
@@ -58,6 +68,8 @@ const InstancedApp = () => (
       {/* <Vignette eskil={false} offset={0.1} darkness={1.1} /> */}
     {/* </EffectComposer> */}
   </Canvas>
+  <Alt />
+  </>
 )
 
 

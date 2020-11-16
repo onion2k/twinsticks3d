@@ -15,7 +15,8 @@
     "react-three-fiber": "^5.1.4",
     "three": "^0.122.0",
     "tumult": "^3.0.14",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "zustand": "^3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
