@@ -135,7 +135,7 @@ const GamepadProvider = (props) => {
         }
 
         if (thrustInputState) {
-          if (thrustState < thrustMax && thrustState >= thrustMin) {
+          if (thrustState < thrustMax*0.9 && thrustState >= thrustMin) {
             setThrustState(thrust=>thrust += 0.1 * thrustInputState)
           }
         } else {

@@ -11,7 +11,7 @@ import useStore from '../gameState'
 
 export default function Model(props) {
 
-  const updateAltitude = useStore(state => state.updateAltitude)
+  const updateTelemetry = useStore( state => state.updateTelemetry )
 
   const ref = useRef()
   const planeref = useRef()
@@ -19,17 +19,11 @@ export default function Model(props) {
   const upAxis = new THREE.Vector3(0,1,0)
   const wingAxis = new THREE.Vector3(1,0,0)
 
-  const [pitch, setPitch] = useState(0)
-  // const [yaw, setYaw] = useState(0)
-  const [thrust, setThrust] = useState(0)
-  
   const [ gamepad, ] = useContext(GamepadContext)
 
   useFrame(({ clock, camera }) => {
 
     if (gamepad) {
-
-      setThrust( gamepad.buttons[7].value * 0.5 )
 
       if (gamepad.axes[0]) {
         planeref.current.rotation.z = gamepad.axes[0] * 0.5 // roll
@@ -37,8 +31,7 @@ export default function Model(props) {
       }
 
       if (gamepad.axes[1]) {
-        setPitch(THREE.MathUtils.degToRad(gamepad.axes[1]))
-        ref.current.rotateOnAxis(wingAxis, pitch)
+        ref.current.rotateOnAxis(wingAxis, THREE.MathUtils.degToRad(gamepad.axes[1]))
       } 
       // else {
       //   if (ref.current.rotation.x < -0.05 || ref.current.rotation.x > 0.05) {
@@ -56,14 +49,23 @@ export default function Model(props) {
         camref.current.rotation.z += gamepad.axes[3] * 0.1
       }
 
-      ref.current.translateZ( thrust ) // thrust
+      ref.current.translateZ( gamepad.buttons[7].value * 0.5 ) // thrust
 
       // Update world data
       const planePos = new THREE.Vector3()
       planeref.current.getWorldPosition(planePos);
-      updateAltitude(planePos.y)
 
-      // console.log(pitch, thrust, height)
+      const planeRot = new THREE.Quaternion()
+      planeref.current.getWorldQuaternion(planeRot);
+
+      updateTelemetry({
+        altitude: planePos.y,
+        longitude: planePos.x,
+        latitude: planePos.z,
+        yaw: planeRot.y,
+        pitch: planeRot.x,
+        thrust: gamepad.buttons[7].value
+      })
 
     }
 

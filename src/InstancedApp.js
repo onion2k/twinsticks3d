@@ -36,9 +36,28 @@ const Alt = () => {
 
   const altitude = useStore(state => state.altitude)
 
-  return <div>{Math.floor(altitude)}</div>
+  return (
+    <div>Altitude:
+      <div style={{ width: '300px', height: '10px', padding: '1px', backgroundColor: 'grey' }}>
+        <div style={{ height: '8px', width: Math.floor(altitude * 10)+'px', backgroundColor: 'red' }}></div>
+      </div>
+    </div>)
 
 }
+
+const Thrust = () => {
+
+  const thrust = useStore(state => state.thrust)
+
+  return (
+    <div>Thrust:
+      <div style={{ width: '300px', height: '10px', padding: '1px', backgroundColor: 'grey' }}>
+        <div style={{ height: '8px', width: Math.floor(thrust * 300)+'px', backgroundColor: 'red' }}></div>
+      </div>
+    </div>)
+
+}
+
 
 const InstancedApp = () => (
   <>
@@ -68,6 +87,7 @@ const InstancedApp = () => (
       {/* <Vignette eskil={false} offset={0.1} darkness={1.1} /> */}
     {/* </EffectComposer> */}
   </Canvas>
+  <Thrust />
   <Alt />
   </>
 )
