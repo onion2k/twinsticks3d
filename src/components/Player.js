@@ -55,15 +55,15 @@ export default function Model(props) {
       const planePos = new THREE.Vector3()
       planeref.current.getWorldPosition(planePos);
 
-      const planeRot = new THREE.Quaternion()
-      planeref.current.getWorldQuaternion(planeRot);
+      const playerRot = new THREE.Quaternion()
+      ref.current.getWorldQuaternion(playerRot);
 
       updateTelemetry({
         altitude: planePos.y,
         longitude: planePos.x,
         latitude: planePos.z,
-        yaw: planeRot.y,
-        pitch: planeRot.x,
+        yaw: playerRot.y,
+        pitch: playerRot.x,
         thrust: gamepad.buttons[7].value
       })
 
