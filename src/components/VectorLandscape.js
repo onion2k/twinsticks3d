@@ -1,11 +1,10 @@
 import * as THREE from 'three'
-import React, { useRef, useEffect } from 'react'
-import { useFrame } from 'react-three-fiber'
+import React from 'react'
 import tumult from 'tumult'
 import FlightPath from './FlightPath'
 import Forest from './Forest'
-import VectorLandscapeHelper from './VectorLandscapeHelper'
-// import "./SeaMaterial"
+import Sea from './Sea'
+// import VectorLandscapeHelper from './VectorLandscapeHelper'
 
 const dimX = 350;
 const dimY = 350;
@@ -23,23 +22,6 @@ function map(val, smin, smax, emin, emax) {
   return (emax-emin)*t + emin
 }
 
-
-function Sea() {
-  const ref = useRef()
-
-  // useFrame(({ camera, clock}) => {
-  //   ref.current.material.time = clock.getElapsedTime()
-  // })
-
-  return (
-    <mesh ref={ref} rotation={[Math.PI * -0.5, 0, Math.PI ]}>
-      <planeBufferGeometry attach="geometry" args={[dimX,dimY, 1, 1]} />
-      {/* <seaMaterial attach="material" color="blue" /> */}
-      <meshPhongMaterial attach="material" color="#8888ff" />
-    </mesh>
-  )
-}
-
 function Landscape() {
 
   const geo = new THREE.PlaneGeometry(dimX, dimY, dimX, dimY+1)
@@ -47,7 +29,6 @@ function Landscape() {
   //assign vert data from the canvas
   for(let j=0; j<dimY; j++) {
     for (let i = 0; i < dimX; i++) {
-      const n =  (j*(dimY)  +i)
       const nn = (j*(dimY+1)+i)
       const v1 = geo.vertices[nn]
       const col = noise[i * dimY + j] * 255
@@ -122,7 +103,7 @@ const VectorLandscape = () => {
     <group>
       <Forest noise={noise} dimX={dimX} dimY={dimY} />
       <FlightPath noise={noise} dimX={dimX} dimY={dimY} />
-      <Sea />
+      <Sea dimX dimY />
       {/* <VectorLandscapeHelper noise={noise} dimX={dimX} dimY={dimY} /> */}
       <Landscape />
     </group>

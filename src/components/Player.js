@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useState } from 'react'
+import React, { useRef, useContext } from 'react'
 import * as THREE from 'three'
 import { useFrame } from 'react-three-fiber'
 import { GamepadContext } from './Gamepad.js';

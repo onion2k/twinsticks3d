@@ -1,10 +1,10 @@
-import React, { Suspense, useRef } from 'react'
-import { Canvas, useThree, useFrame } from 'react-three-fiber'
+import React, { Suspense } from 'react'
+import { Canvas, useThree } from 'react-three-fiber'
 import { CubeTextureLoader } from "three";
 // import { EffectComposer, DepthOfField, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 import useStore from './gameState'
 
-import { OrbitControls } from '@react-three/drei/OrbitControls'
+// import { OrbitControls } from '@react-three/drei/OrbitControls'
 import { Stats } from '@react-three/drei/Stats'
 
 import { GamepadProvider } from './components/Gamepad'
@@ -66,8 +66,7 @@ const InstancedApp = () => (
         gl={{ antialias: false, alpha: false }}
       >
         {/* <ambientLight color={'#111111'} /> */}
-        <pointLight position={[50, 50, 50]} intensity={0.25} />
-        <directionalLight color={'#ffffff'} intensity={0.15} position={[0, 1, 1]} />
+        <directionalLight color={'#ffffff'} intensity={0.5} position={[0, 1, 1]} />
         {/* <fogExp2 attach="fog" args={['white', 0.004]} /> */}
         <GamepadProvider>
           <Suspense fallback={null}>
