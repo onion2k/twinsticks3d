@@ -7,8 +7,6 @@ import Jet from './Jet.js'
 
 import useStore from '../gameState'
 
-// import LightAircraft from './LightAircraft.js'
-
 export default function Model(props) {
 
   const updateTelemetry = useStore( state => state.updateTelemetry )

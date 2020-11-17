@@ -13,12 +13,58 @@ body,
   place-items: center;
 }
 
-canvas {
-  width: 800px;
-  height: 600px;
+div.wrapper {
+  position: relative;
+  width: 802px;
+  height: 602px;
   border: 1px solid black;
 }
 
-body {
-  background: lightpink;
+.game {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  perspective-origin: center bottom;
+  perspective: 1000px;
+  overflow: hidden;
+}
+
+.hud > div {
+  margin: -10px;
+  height: fit-content;
+  padding: 30px;
+  background-color: rgba(255,255,255,0.5);
+}
+
+.hud > div:nth-child(1) {
+  align-self: flex-end;
+  justify-self: flex-start;
+  transform: rotateY(30deg);
+}
+
+.hud > div:nth-child(2) {
+  align-self: flex-end;
+  justify-self: flex-end;
+  transform: rotateY(-30deg);
+}
+
+
+canvas {
+  width: 800px;
+  height: 600px;
 }
