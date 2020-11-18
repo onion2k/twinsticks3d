@@ -1,16 +1,15 @@
 import React, { Suspense } from 'react'
 import { Canvas, useThree } from 'react-three-fiber'
 import { CubeTextureLoader } from "three";
-// import { EffectComposer, DepthOfField, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 import useStore from './gameState'
+// import { EffectComposer, DepthOfField, Bloom, Noise, Vignette } from '@react-three/postprocessing'
 
 // import { OrbitControls } from '@react-three/drei/OrbitControls'
 import { Stats } from '@react-three/drei/Stats'
 
 import { GamepadProvider } from './components/Gamepad'
-// import CubeLandscape from './components/CubeLandscape'
-import VectorLandscape from './components/VectorLandscape'
-import Player from './components/Player'
+import VectorLandscape from './components/Landscape/VectorLandscape'
+import Player from './components/Player/Player'
 
 import './App.css'
 

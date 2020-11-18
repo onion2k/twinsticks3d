@@ -1,11 +1,11 @@
 import React, { useRef, useContext } from 'react'
 import * as THREE from 'three'
 import { useFrame } from 'react-three-fiber'
-import { GamepadContext } from './Gamepad.js';
+import { GamepadContext } from '../Gamepad.js';
 import { Camera } from './Camera.js'
 import Jet from './Jet.js'
 
-import useStore from '../gameState'
+import useStore from '../../gameState'
 
 export default function Model(props) {
 

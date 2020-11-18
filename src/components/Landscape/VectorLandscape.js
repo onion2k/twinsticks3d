@@ -34,7 +34,7 @@ function Landscape() {
       const col = noise[i * dimY + j] * 255
       v1.x += map(Math.random(),0,1,-0.1,0.1) //jitter x
       v1.y += map(Math.random(),0,1,-0.1,0.1) //jitter y
-      v1.z = map(col,0,255,-10,10) //map from 0:255 to -10:10
+      v1.z  = map(col,0,255,-10,10) //map from 0:255 to -10:10
     }
   }
 
