@@ -6,11 +6,38 @@ function map(val, smin, smax, emin, emax) {
   return (emax-emin)*t + emin
 }
 
+
+const vertexShader = `
+  precision mediump float;
+  varying vec2 vUv;
+  void main() {
+      vec4 mvPosition = modelViewMatrix * vec4(position, 1.);
+      gl_Position = projectionMatrix * mvPosition;
+      vUv = uv;
+  }
+`;
+
+const fragmentShader = `
+  varying vec2 vUv;
+  uniform float u_time;
+  uniform vec2 u_resolution;
+
+  void main() {
+    vec2 uv = vUv;
+    float cb = floor(uv.x*15.) + floor(uv.y*2.);
+    gl_FragColor = vec4(mod(cb, 2.0),mod(cb, 2.0),mod(cb, 2.0),1.);
+  }
+`;
+
 const gate = (props) => {
   return (
     <mesh {...props}>
-      <torusBufferGeometry args={[15, 0.5, 16, 48]} />
-      <meshPhongMaterial color={'red'} />
+      <torusGeometry args={[16, 0.75, 16, 48]} />
+      <shaderMaterial
+        uniforms={{ u_time: 1 }}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+      />
     </mesh>
   )
 }
