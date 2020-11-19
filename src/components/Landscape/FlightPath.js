@@ -6,6 +6,15 @@ function map(val, smin, smax, emin, emax) {
   return (emax-emin)*t + emin
 }
 
+const gate = (props) => {
+  return (
+    <mesh {...props}>
+      <torusBufferGeometry args={[15, 0.5, 16, 48]} />
+      <meshPhongMaterial color={'red'} />
+    </mesh>
+  )
+}
+
 export default function FlightPath(props) {
 
   const { noise, dimX, dimY } = props
@@ -91,9 +100,6 @@ export default function FlightPath(props) {
 
   for (let x = 0; x < nPoints+1; x=x+2) {
 
-    // curveHelper.push(<mesh key={`helper_0_${x}`} geometry={helperGeometry} material={material3} position={curveGeoPoints[0][x]} />)
-    // curveHelper.push(<mesh key={`helper_1_${x}`} geometry={helperGeometry} material={material3} position={curveGeoPoints[1][x]} />)
-
     geometry.vertices.push(
       new THREE.Vector3( curveGeoPoints[0][x].x, curveGeoPoints[0][x].y, curveGeoPoints[0][x].z ),
       new THREE.Vector3( curveGeoPoints[1][x].x, curveGeoPoints[1][x].y, curveGeoPoints[1][x].z ),
@@ -108,9 +114,23 @@ export default function FlightPath(props) {
 
   }
 
+  const gates = [
+    gate({ position: [50, 18, -50], rotation: [0,Math.PI * 0.25,0] }),
+    gate({ position: [50, 18, 0], rotation: [0,Math.PI * 0,0] }),
+    gate({ position: [50, 18, 50], rotation: [0,Math.PI * -0.25,0] }),
+
+    gate({ position: [0, 18, 50], rotation: [0,Math.PI * -0.5,0] }),
+    gate({ position: [-50, 18, 50], rotation: [0,Math.PI * -0.75,0] }),
+    gate({ position: [-50, 18, 0], rotation: [0,Math.PI * -1.0,0] }),
+    gate({ position: [-50, 18, -50], rotation: [0,Math.PI * -1.25,0] }),
+    gate({ position: [0, 18, -50], rotation: [0,Math.PI * -1.5,0] }),
+
+  ]
+
   return (
     <>
       {curves}
+      {gates.map(g=>g)}
       <mesh geometry={geometry} material={material3} />
     </>)
 
