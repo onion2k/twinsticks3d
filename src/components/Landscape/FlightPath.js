@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useRef } from 'react'
+import { useFrame } from "react-three-fiber";
 import * as THREE from 'three'
 
 function map(val, smin, smax, emin, emax) {
@@ -6,37 +7,46 @@ function map(val, smin, smax, emin, emax) {
   return (emax-emin)*t + emin
 }
 
+const GateShader = {
+  uniforms: {
+    u_time: { type: "f", value: 0 },
+  },
+  vertexShader: `
+    precision mediump float;
+    varying vec2 vUv;
+    void main() {
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.);
+        gl_Position = projectionMatrix * mvPosition;
+        vUv = uv;
+    }
+  `,
+  fragmentShader: `
+    varying vec2 vUv;
+    uniform float u_time;
 
-const vertexShader = `
-  precision mediump float;
-  varying vec2 vUv;
-  void main() {
-      vec4 mvPosition = modelViewMatrix * vec4(position, 1.);
-      gl_Position = projectionMatrix * mvPosition;
-      vUv = uv;
-  }
-`;
+    void main() {
+      vec2 uv = vUv;
+      float cb = floor((uv.x+u_time)*40.) + floor(uv.y*4.);
+      gl_FragColor = vec4(mod(cb, 2.0),mod(cb, 2.0),mod(cb, 2.0),1.);
+    }
+  `
+};
 
-const fragmentShader = `
-  varying vec2 vUv;
-  uniform float u_time;
-  uniform vec2 u_resolution;
+const Gate = (props) => {
+  const ref = useRef()
 
-  void main() {
-    vec2 uv = vUv;
-    float cb = floor(uv.x*15.) + floor(uv.y*2.);
-    gl_FragColor = vec4(mod(cb, 2.0),mod(cb, 2.0),mod(cb, 2.0),1.);
-  }
-`;
+  useFrame(() => {
+    // ref.current.rotation.x = ref.current.rotation.y += 0.01;
+    // const u_time = ref.current.material.uniforms.u_time.value;
+    ref.current.material.uniforms.u_time.value += 0.001;
+  });
 
-const gate = (props) => {
   return (
-    <mesh {...props}>
-      <torusGeometry args={[16, 0.75, 16, 48]} />
+    <mesh ref={ref} {...props}>
+      <torusGeometry attach="geometry" args={[16, 0.75, 16, 48]} />
       <shaderMaterial
-        uniforms={{ u_time: 1 }}
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
+        attach="material"
+        args={[GateShader]}
       />
     </mesh>
   )
@@ -142,15 +152,15 @@ export default function FlightPath(props) {
   }
 
   const gates = [
-    gate({ position: [50, 18, -50], rotation: [0,Math.PI * 0.25,0] }),
-    gate({ position: [50, 18, 0], rotation: [0,Math.PI * 0,0] }),
-    gate({ position: [50, 18, 50], rotation: [0,Math.PI * -0.25,0] }),
+    <Gate position={[50, 18, -50]} rotation={[0,Math.PI * 0.25,0]} />,
+    // gate({ position: [50, 18, 0], rotation: [0,Math.PI * 0,0] }),
+    // gate({ position: [50, 18, 50], rotation: [0,Math.PI * -0.25,0] }),
 
-    gate({ position: [0, 18, 50], rotation: [0,Math.PI * -0.5,0] }),
-    gate({ position: [-50, 18, 50], rotation: [0,Math.PI * -0.75,0] }),
-    gate({ position: [-50, 18, 0], rotation: [0,Math.PI * -1.0,0] }),
-    gate({ position: [-50, 18, -50], rotation: [0,Math.PI * -1.25,0] }),
-    gate({ position: [0, 18, -50], rotation: [0,Math.PI * -1.5,0] }),
+    // gate({ position: [0, 18, 50], rotation: [0,Math.PI * -0.5,0] }),
+    // gate({ position: [-50, 18, 50], rotation: [0,Math.PI * -0.75,0] }),
+    // gate({ position: [-50, 18, 0], rotation: [0,Math.PI * -1.0,0] }),
+    // gate({ position: [-50, 18, -50], rotation: [0,Math.PI * -1.25,0] }),
+    // gate({ position: [0, 18, -50], rotation: [0,Math.PI * -1.5,0] }),
 
   ]
 
