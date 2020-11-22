@@ -35,10 +35,10 @@ const GateShader = {
 const Gate = (props) => {
   const ref = useRef()
 
-  useFrame(() => {
+  useFrame(({ clock }) => {
     // ref.current.rotation.x = ref.current.rotation.y += 0.01;
     // const u_time = ref.current.material.uniforms.u_time.value;
-    ref.current.material.uniforms.u_time.value += 0.001;
+    ref.current.material.uniforms.u_time.value = clock.oldTime * 0.0001;
   });
 
   return (
@@ -153,15 +153,13 @@ export default function FlightPath(props) {
 
   const gates = [
     <Gate position={[50, 18, -50]} rotation={[0,Math.PI * 0.25,0]} />,
-    // gate({ position: [50, 18, 0], rotation: [0,Math.PI * 0,0] }),
-    // gate({ position: [50, 18, 50], rotation: [0,Math.PI * -0.25,0] }),
-
-    // gate({ position: [0, 18, 50], rotation: [0,Math.PI * -0.5,0] }),
-    // gate({ position: [-50, 18, 50], rotation: [0,Math.PI * -0.75,0] }),
-    // gate({ position: [-50, 18, 0], rotation: [0,Math.PI * -1.0,0] }),
-    // gate({ position: [-50, 18, -50], rotation: [0,Math.PI * -1.25,0] }),
-    // gate({ position: [0, 18, -50], rotation: [0,Math.PI * -1.5,0] }),
-
+    <Gate position={[50, 18, 0]} rotation={[0,Math.PI * 0,0] } />,
+    <Gate position={[50, 18, 50]} rotation={[0,Math.PI * -0.25,0] } />,
+    <Gate position={[0, 18, 50]} rotation={[0,Math.PI * -0.5,0] } />,
+    <Gate position={[-50, 18, 50]} rotation={[0,Math.PI * -0.75,0] } />,
+    <Gate position={[-50, 18, 0]} rotation={[0,Math.PI * -1.0,0] } />,
+    <Gate position={[-50, 18, -50]} rotation={[0,Math.PI * -1.25,0] } />,
+    <Gate position={[0, 18, -50]} rotation={[0,Math.PI * -1.5,0] } />,
   ]
 
   return (
