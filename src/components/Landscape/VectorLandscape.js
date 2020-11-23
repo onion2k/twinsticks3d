@@ -55,13 +55,13 @@ function Landscape() {
 
     //assign colors based on the highest point of the face
     const max = Math.max(a.z,Math.max(b.z,c.z))
-    if(max <=0)   return f.color.set(0x1111ff)
-    if(max <=1.5) return f.color.set(0xfcd046)
-    if(max <=3.5) return f.color.set(0x00aa00)
-    if(max <=5)   return f.color.set(0x007700)
+    if(max <=0)   return f.color.set(0x330077)
+    if(max <=1.5) return f.color.set(0x660077)
+    if(max <=3.5) return f.color.set(0x990077)
+    if(max <=5)   return f.color.set(0xcc0077)
 
     //otherwise, return white
-    f.color.set('white')
+    f.color.set(0xff0077)
   })
 
   geo.colorsNeedUpdate = true
